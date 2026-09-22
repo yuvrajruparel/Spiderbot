@@ -1,0 +1,108 @@
+<mujoco model="spideybot">
+  <compiler angle="degree" meshdir="assets" autolimits="true"/>
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+
+  <default>
+    <joint damping="0.08" armature="0.008"/>
+    <default class="vis">
+      <geom contype="0" conaffinity="0" rgba="0.9 0.9 0.9 1"/>
+    </default>
+    <default class="servo">
+      <geom type="box" mass="0.055" contype="0" conaffinity="0" rgba="0 0.4 0.8 0.35"/>
+    </default>
+    <default class="foot">
+      <geom type="sphere" size="0.0075" rgba="0.1 0.1 0.1 1"
+            friction="1.1 0.02 0.001" solref="0.005 1"/>
+    </default>
+  </default>
+
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512"
+             rgb1="0.22 0.23 0.25" rgb2="0.32 0.34 0.36"/>
+    <material name="gridmat" texture="grid" texrepeat="60 60" reflectance="0.05"/>
+    <mesh name="chassis" file="chassis.stl"     scale="0.001 0.001 0.001"/>
+    <mesh name="upper_R" file="leg_upper_R.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="upper_L" file="leg_upper_L.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="lower_R" file="leg_lower_R.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="lower_L" file="leg_lower_L.stl" scale="0.001 0.001 0.001"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 2" dir="0 0 -1"/>
+    <geom name="floor" type="plane" size="3 3 0.1" material="gridmat"
+          friction="1.1 0.02 0.001"/>
+    <geom type="cylinder" pos="0.25 0 0.02" size="0.004 0.02" rgba="0.9 0.3 0.2 1" contype="0" conaffinity="0"/>
+    <geom type="cylinder" pos="0.50 0 0.02" size="0.004 0.02" rgba="0.9 0.3 0.2 1" contype="0" conaffinity="0"/>
+    <geom type="cylinder" pos="0.75 0 0.02" size="0.004 0.02" rgba="0.9 0.3 0.2 1" contype="0" conaffinity="0"/>
+
+    <body name="chassis" pos="0 0 0.060">
+      <freejoint/>
+      <geom class="vis" type="mesh" mesh="chassis" mass="0.152"/>
+      <geom type="box" pos="0 0 0.015" size="0.057 0.064 0.025" mass="0" rgba="1 1 1 0.06"/>
+      <geom type="box" pos="0 0 0.010" size="0.050 0.040 0.020" mass="0.511"
+            contype="0" conaffinity="0" rgba="0.2 0.2 0.2 0.35"/>
+      <geom type="box" pos="0.062 0 0.030" size="0.006 0.020 0.004" mass="0"
+            contype="0" conaffinity="0" rgba="0.9 0.2 0.15 1"/>
+
+      <geom class="servo" pos=" 0.050885 -0.048648 0.01555" size="0.022546 0.0125 0.01815"/>
+      <geom class="servo" pos=" 0.050885  0.048648 0.01555" size="0.022546 0.0125 0.01815"/>
+      <geom class="servo" pos="-0.050885 -0.048648 0.01555" size="0.022546 0.0125 0.01815"/>
+      <geom class="servo" pos="-0.050885  0.048648 0.01555" size="0.022546 0.0125 0.01815"/>
+
+      <body name="upper_FR" pos="0.063431 -0.048648 0.0337">
+        <joint name="hip_FR" type="hinge" axis="0 0 1" range="-25 60"/>
+        <geom class="vis" type="mesh" mesh="upper_R" mass="0.007"/>
+        <body name="lower_FR" pos="0.0065 -0.050 -0.0225">
+          <joint name="knee_FR" type="hinge" axis="1 0 0" range="30 60"/>
+          <geom class="vis" type="mesh" mesh="lower_R" euler="0 0 90" mass="0.012"/>
+          <geom class="servo" pos="-0.01815 -0.012546 0" size="0.01815 0.022546 0.0125"/>
+          <geom name="foot_FR" class="foot" pos="0 -0.075 0"/>
+        </body>
+      </body>
+
+      <body name="upper_FL" pos="0.063431 0.048648 0.0337">
+        <joint name="hip_FL" type="hinge" axis="0 0 1" range="-60 25"/>
+        <geom class="vis" type="mesh" mesh="upper_L" euler="0 0 180" mass="0.007"/>
+        <body name="lower_FL" pos="0.0065 0.050 -0.0225">
+          <joint name="knee_FL" type="hinge" axis="-1 0 0" range="30 60"/>
+          <geom class="vis" type="mesh" mesh="lower_L" euler="0 0 -90" mass="0.012"/>
+          <geom class="servo" pos="-0.01815 0.012546 0" size="0.01815 0.022546 0.0125"/>
+          <geom name="foot_FL" class="foot" pos="0 0.075 0"/>
+        </body>
+      </body>
+
+      <body name="upper_BR" pos="-0.063431 -0.048648 0.0337">
+        <joint name="hip_BR" type="hinge" axis="0 0 1" range="-60 25"/>
+        <geom class="vis" type="mesh" mesh="upper_L" mass="0.007"/>
+        <body name="lower_BR" pos="-0.0065 -0.050 -0.0225">
+          <joint name="knee_BR" type="hinge" axis="1 0 0" range="30 60"/>
+          <geom class="vis" type="mesh" mesh="lower_L" euler="0 0 90" mass="0.012"/>
+          <geom class="servo" pos="0.01815 -0.012546 0" size="0.01815 0.022546 0.0125"/>
+          <geom name="foot_BR" class="foot" pos="0 -0.075 0"/>
+        </body>
+      </body>
+
+      <body name="upper_BL" pos="-0.063431 0.048648 0.0337">
+        <joint name="hip_BL" type="hinge" axis="0 0 1" range="-25 60"/>
+        <geom class="vis" type="mesh" mesh="upper_R" euler="0 0 180" mass="0.007"/>
+        <body name="lower_BL" pos="-0.0065 0.050 -0.0225">
+          <joint name="knee_BL" type="hinge" axis="-1 0 0" range="30 60"/>
+          <geom class="vis" type="mesh" mesh="lower_R" euler="0 0 -90" mass="0.012"/>
+          <geom class="servo" pos="0.01815 0.012546 0" size="0.01815 0.022546 0.0125"/>
+          <geom name="foot_BL" class="foot" pos="0 0.075 0"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="a_hip_FR"  joint="hip_FR"  kp="4" kv="0.15" ctrlrange="-25 60"/>
+    <position name="a_knee_FR" joint="knee_FR" kp="4" kv="0.15" ctrlrange="30 60"/>
+    <position name="a_hip_FL"  joint="hip_FL"  kp="4" kv="0.15" ctrlrange="-60 25"/>
+    <position name="a_knee_FL" joint="knee_FL" kp="4" kv="0.15" ctrlrange="30 60"/>
+    <position name="a_hip_BR"  joint="hip_BR"  kp="4" kv="0.15" ctrlrange="-60 25"/>
+    <position name="a_knee_BR" joint="knee_BR" kp="4" kv="0.15" ctrlrange="30 60"/>
+    <position name="a_hip_BL"  joint="hip_BL"  kp="4" kv="0.15" ctrlrange="-25 60"/>
+    <position name="a_knee_BL" joint="knee_BL" kp="4" kv="0.15" ctrlrange="30 60"/>
+  </actuator>
+</mujoco>
